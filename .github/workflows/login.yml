@@ -1,45 +1,36 @@
 name: Serv00/CT8 Login Tasks
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "14 13 */10 * *"  # 每月1号开始，每10天运行一次，运行时间为13:14
-  # push:
-  #   paths-ignore:
-  #     - "LICENSE"
-  #     - "README.md"
-  #     - "README_**"
-  #     - "README-**"
-  #   branches:
-  #     - main
 
 env:
   ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
   TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
   TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  COLLECT_MESSAGES: true
 
 jobs:
   login:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Create accounts.json
         run: echo "$ACCOUNTS_JSON" > accounts.json
-
+      
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-
+      
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser libnss3 libatk-bridge2.0-0 libx11-xcb1 libgbm-dev
           npm install puppeteer axios
-
+      
       - name: Login into Serv00/CT8
         run: |
           set -e
